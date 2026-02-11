@@ -9,8 +9,17 @@ export default function Header({ theme, toggleTheme }) {
   const isActive = (path) => location.pathname === path;
 
   const navItems = [
-    { path: '/', label: 'Home' },
+    { path: '/', label: 'Home', home: true },
     { path: '/about', label: 'About' },
+    {
+      path: '/projects',
+      label: 'Projects',
+      children: [
+        { path: '/projects/ai', label: 'AI & ML' },
+        { path: '/projects/cloud', label: 'Cloud Platform' },
+        { path: '/projects/security', label: 'Security' },
+      ],
+    },
     { path: '/companies', label: 'Companies' },
   ];
 
@@ -26,19 +35,40 @@ export default function Header({ theme, toggleTheme }) {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? 'text-blue-600 dark:text-blue-400'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                {item.label}
-              </Link>
+              <div key={item.path} className="relative group">
+                <Link
+                  to={item.path}
+                  className={`px-3 py-2 text-sm font-medium transition-colors inline-flex items-center gap-2 ${
+                    isActive(item.path)
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  {item.home ? (
+                    <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded flex items-center justify-center text-white text-xs font-bold">AS</div>
+                  ) : null}
+                  <span>{item.label}</span>
+                </Link>
+
+                {/* Dropdown for items with children */}
+                {item.children && (
+                  <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transform translate-y-1 group-hover:translate-y-0 transition-all">
+                    <div className="p-3">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.path}
+                          to={child.path}
+                          className="block px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
 
@@ -50,9 +80,9 @@ export default function Header({ theme, toggleTheme }) {
               title="Toggle theme"
             >
               {theme === 'dark' ? (
-                <Sun size={20} className="text-gray-700 dark:text-yellow-400" />
+                <Moon size={20} className="text-yellow-400" />
               ) : (
-                <Moon size={20} className="text-gray-700" />
+                <Sun size={20} className="text-gray-700" />
               )}
             </button>
 
